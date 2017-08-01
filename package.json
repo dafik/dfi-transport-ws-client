@@ -1,0 +1,33 @@
+{
+  "name": "dfi-transport-client",
+  "description": "abstract socket.io transport",
+  "author": "zbyszek.wieczorek@gmail.com",
+  "version": "0.0.1",
+  "dependencies": {
+    "local-dfi-base": "*",
+    "local-dfi-debug-logger": "*",
+    "socket.io-client": "^2"
+  },
+  "devDependencies": {
+    "@types/mocha": "^2.2.32",
+    "@types/node": "^6.0.46",
+    "@types/socket.io-client": "^1.4.27",
+    "@types/socket.io": "^1.4.27",
+    "local-cc-live-server": "^1.0.12",
+    "mocha": "*",
+    "nyc": "^11.0.3",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.4.2"
+  },
+  "engine": "node >= 6.1.0",
+  "main": "start.js",
+  "nyc": {
+    "extension": [
+      ".ts",
+      ".js"
+    ],
+    "exclude": [
+      "tests/"
+    ]
+  }
+}
