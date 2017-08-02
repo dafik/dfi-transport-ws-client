@@ -58,6 +58,14 @@ abstract class Transport extends DfiEventObject {
         this.setProp(PROP_PROTOCOL_HANDLERS, new Map());
         this.setProp(PROP_WS_HANDLERS, new Map());
         this.setProp(PROP_TIMERS, new Map());
+
+        const config: IWebSocketProtocolOptions = {
+            loggerName: this.logger.name.replace(this.constructor.name, "") + "ws:",
+            namespace: this.namespace,
+            transportOptions: this._ioOptions
+        };
+
+        this.setProp(PROP_WEBSOCKET, new WebSocketProtocol(config));
     }
 
     public destroy() {
@@ -77,13 +85,6 @@ abstract class Transport extends DfiEventObject {
 
         this.logger.info("start");
 
-        const config: IWebSocketProtocolOptions = {
-            loggerName: this.logger.name.replace(this.constructor.name, "") + "ws:",
-            namespace: this.namespace,
-            transportOptions: this._ioOptions
-        };
-
-        this.setProp(PROP_WEBSOCKET, new WebSocketProtocol(config));
 
         this._prepareWsHandlers();
 

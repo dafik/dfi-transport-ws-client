@@ -181,4 +181,19 @@ describe("Client only", () => {
         done();
 
     })
+
+    it("stop when not started", (done) => {
+        const transport = new TransportImpl(config);
+
+        assert.throws(() => {
+            transport.connectNamespace("testNamespace");
+        });
+
+        assert.doesNotThrow((err) => {
+            transport.stop();
+        });
+
+        transport.destroy();
+        done();
+    })
 });
