@@ -1,7 +1,7 @@
 import io = require("socket.io-client");
 import {DfiEventObject, DfiUtil} from "local-dfi-base";
 import DebugLogger from "local-dfi-debug-logger";
-import {IIoSocket, IIoTransportOptions, IWebSocketProtocolOptions} from "./../interfaces";
+import {IIoSocket, IIoTransportOptions, IWebSocketProtocolOptions} from "../interfaces";
 
 const PROP_SOCKET_STD_HANDLERS = "socketHandlers";
 const PROP_MANAGER_STD_HANDLERS = "managerHandlers";
@@ -14,7 +14,7 @@ const PROP_LOGGER_MANAGER = "loggerM";
 
 const PROP_TRANSPORT_OPTIONS = "transportOptions";
 
-class WebSocketProtocol extends DfiEventObject {
+export class WebSocketProtocol extends DfiEventObject {
 
     public static get events() {
         return EVENTS;
@@ -87,7 +87,7 @@ class WebSocketProtocol extends DfiEventObject {
                 this.logger.info("on error");
                 if (this._manager.reconnection()) {
                     DfiUtil.maybeCallbackOnce(callback, context);
-                    return
+                    return;
                 }
                 DfiUtil.maybeCallbackOnce(callback, context, err);
 

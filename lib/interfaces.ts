@@ -1,11 +1,4 @@
-import {IDfiBaseEventObjectEvents, IDfiBaseObjectConfig} from "local-dfi-base";
-
-export interface ITransportEvents extends IDfiBaseEventObjectEvents {
-    CONNECT: symbol;
-    DISCONNECT: symbol;
-    ERROR: symbol;
-}
-
+import {IDfiBaseObjectConfig} from "local-dfi-base";
 
 export interface IIoTransportOptions extends IDfiBaseObjectConfig {
     host: string;
