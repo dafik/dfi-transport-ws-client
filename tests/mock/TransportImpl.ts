@@ -11,16 +11,23 @@ export default class TransportImpl extends Transport {
             loggerName: "trImpl:",
             ...options
         };
-        super(options)
+        super(options);
 
         this._prepareProtocolHandlers();
     }
-
 
     private _prepareProtocolHandlers() {
         this._protocolHandlers.set("update", (message) => {
             this.emit(TransportImpl.events.UPDATE, message);
         });
+    }
+
+    public _createTimer(name: string, time: number, callbackFn?: (...arg) => void, context?): any {
+        return super._createTimer(name, time, callbackFn, context);
+    }
+
+    public _clearTimer(name): any {
+        return super._clearTimer(name);
     }
 }
 

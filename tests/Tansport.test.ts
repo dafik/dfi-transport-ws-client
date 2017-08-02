@@ -2,6 +2,7 @@ import TransportImpl from "./mock/TransportImpl";
 import {ITransportOptions} from "../lib/interfaces";
 import Transport from "../lib/Transport";
 import DebugLogger from "local-dfi-debug-logger/debugLogger";
+import * as assert from "assert";
 
 const logger = new DebugLogger("test");
 const cloneLiteral = (literal) => {
@@ -148,4 +149,36 @@ describe("Client only", () => {
             }
         });
     }).timeout(5000);
+
+    it("timers", (done) => {
+        const transport = new TransportImpl(config);
+
+
+        transport._createTimer("test1", 50, () => {
+            done(new Error("timer should not fire"));
+        });
+        transport._clearTimer("test1");
+
+
+        transport._createTimer("test2", 50, () => {
+            transport._createTimer("test2", 50, () => {
+                done(new Error("timer should not fire"));
+
+            });
+            transport.destroy();
+            done();
+        })
+    });
+
+    it("create namespace", (done) => {
+        const transport = new TransportImpl(config);
+
+        assert.throws(() => {
+            transport.connectNamespace("testNamespace");
+        });
+
+        transport.destroy();
+        done();
+
+    })
 });

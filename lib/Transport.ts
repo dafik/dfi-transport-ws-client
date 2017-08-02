@@ -5,6 +5,8 @@ import WebSocketProtocol from "./protocols/WebSocket";
 
 const PROP_NAMESPACE = "namespace";
 
+const PROP_TIMERS = "timers";
+
 const PROP_IO_OPTIONS = "ioTransportOptions";
 const PROP_WEBSOCKET = "websocket";
 
@@ -33,13 +35,18 @@ abstract class Transport extends DfiEventObject {
         return this.getProp(PROP_WS_HANDLERS);
     }
 
-    private get ws(): WebSocketProtocol {
+    private get _ws(): WebSocketProtocol {
         return this.getProp(PROP_WEBSOCKET);
     }
 
     private get _ioOptions(): IIoTransportOptions {
         return this.getProp(PROP_IO_OPTIONS);
     }
+
+    private get _timers(): Map<string, NodeJS.Timer> {
+        return this.getProp(PROP_TIMERS);
+    }
+
 
     constructor(options: ITransportOptions) {
         options = {
@@ -50,10 +57,16 @@ abstract class Transport extends DfiEventObject {
 
         this.setProp(PROP_PROTOCOL_HANDLERS, new Map());
         this.setProp(PROP_WS_HANDLERS, new Map());
+        this.setProp(PROP_TIMERS, new Map());
     }
 
     public destroy() {
-        const ws = this.ws;
+
+        for (const timerName of this._timers.keys()) {
+            this._clearTimer(timerName);
+        }
+
+        const ws = this._ws;
         if (ws) {
             ws.destroy();
         }
@@ -77,7 +90,7 @@ abstract class Transport extends DfiEventObject {
         this._bindWsHandlers();
         this._bindProtocolHandlers();
 
-        this.ws.start((err) => {
+        this._ws.start((err) => {
             this.logger.info("started");
             DfiUtil.maybeCallbackOnce(callbackFn, context, err);
         });
@@ -104,7 +117,7 @@ abstract class Transport extends DfiEventObject {
             this.send(LiveTransport.live.Actions.UN_REGISTER, this.appState.id, onSocketUnsubscribe);
         }*/
 
-        this.ws.stop((err) => {
+        this._ws.stop((err) => {
 
             this._unbindWsHandlers();
 
@@ -157,12 +170,12 @@ abstract class Transport extends DfiEventObject {
     }
                  */
 
-    public connectNamespace(namespace:string){
+    public connectNamespace(namespace: string) {
         throw new Error('not implemented yet')
     }
 
     public send(action: string, data?: {}, callback?: (...args) => void) {
-        this.ws.send(action, data, callback);
+        this._ws.send(action, data, callback);
     }
 
     protected _prepareWsHandlers() {
@@ -179,27 +192,42 @@ abstract class Transport extends DfiEventObject {
         });
     }
 
+    protected _createTimer(name: string, time: number, callbackFn?: (...arg) => void, context?) {
+
+        this._timers.set(name, setTimeout(() => {
+            this.logger.error("timeout for ack: " + name);
+            DfiUtil.maybeCallbackOnce(callbackFn, context);
+        }, time));
+    }
+
+    protected _clearTimer(name) {
+        if (this._timers.has(name)) {
+            clearTimeout(this._timers.get(name));
+            this._timers.delete(name);
+        }
+    }
+
     private _bindWsHandlers() {
         this._wsHandlers.forEach((handler, event) => {
-            this.ws.on(event, handler);
+            this._ws.on(event, handler);
         });
     }
 
     private _unbindWsHandlers() {
         this._wsHandlers.forEach((handler, event) => {
-            this.ws.off(event, handler);
+            this._ws.off(event, handler);
         });
     }
 
     private _bindProtocolHandlers() {
         this._protocolHandlers.forEach((handler, event) => {
-            this.ws.proxyOn(event, handler);
+            this._ws.proxyOn(event, handler);
         });
     }
 
     private _unbindProtocolHandlers() {
         this._protocolHandlers.forEach((handler, event) => {
-            this.ws.proxyOff(event, handler);
+            this._ws.proxyOff(event, handler);
         });
     }
 
