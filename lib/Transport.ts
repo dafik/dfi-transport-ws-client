@@ -2,7 +2,7 @@ import {DfiEventObject, DfiUtil} from "local-dfi-base";
 import {IIoTransportOptions, ITransportOptions, IWebSocketProtocolOptions} from "./interfaces";
 import WebSocketProtocol from "./protocols/WebSocket";
 
-const PROP_IN_DESTROY = "inDestroy";
+
 const PROP_NAMESPACE = "namespace";
 
 const PROP_IO_OPTIONS = "ioTransportOptions";
@@ -16,21 +16,14 @@ abstract class Transport extends DfiEventObject {
         return EVENTS;
     }
 
-/*    public get inDestroy(): boolean {
-        return this.getProp(PROP_IN_DESTROY);
-    }
-
-    public set inDestroy(val: boolean) {
-        this.setProp(PROP_IN_DESTROY, val);
-    }*/
 
     public get namespace(): string {
         return this.getProp(PROP_NAMESPACE);
     }
 
-/*    public set namespace(name: string) {
-        this.setProp(PROP_NAMESPACE, name);
-    }*/
+    /*    public set namespace(name: string) {
+            this.setProp(PROP_NAMESPACE, name);
+        }*/
 
     protected get _protocolHandlers(): Map<string, (...args) => void> {
         return this.getProp(PROP_PROTOCOL_HANDLERS);
@@ -163,6 +156,10 @@ abstract class Transport extends DfiEventObject {
         }
     }
                  */
+
+    public connectNamespace(namespace:string){
+        throw new Error('not implemented yet')
+    }
 
     public send(action: string, data?: {}, callback?: (...args) => void) {
         this.ws.send(action, data, callback);
