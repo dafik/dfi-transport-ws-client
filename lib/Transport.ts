@@ -184,8 +184,8 @@ abstract class Transport extends DfiEventObject {
             this.emit(Transport.events.CONNECTED, this);
         });
 
-        this._wsHandlers.set(WebSocketProtocol.events.DISCONNECTED, () => {
-            this.emit(Transport.events.DISCONNECTED);
+        this._wsHandlers.set(WebSocketProtocol.events.DISCONNECTED, (reason) => {
+            this.emit(Transport.events.DISCONNECTED, reason);
         });
 
         this._wsHandlers.set(WebSocketProtocol.events.ERROR, (error) => {

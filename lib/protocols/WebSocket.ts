@@ -187,6 +187,8 @@ export class WebSocketProtocol extends DfiEventObject {
             } else {
                 socket.emit(action, data);
             }
+        } else {
+            this.logger.error("try to send: " + action + " without socket");
         }
     }
 
@@ -199,9 +201,9 @@ export class WebSocketProtocol extends DfiEventObject {
 
         });
 
-        this._socketHandlers.set("disconnect", () => {
-            this.loggerS.debug("socket disconnect  - Fired upon a disconnection s:%j n:%j", this._socket._id, this._socket.nsp);
-            this.emit(WebSocketProtocol.events.DISCONNECTED);
+        this._socketHandlers.set("disconnect", (reason) => {
+            this.loggerS.debug("socket disconnect  - Fired upon a disconnection s:%j n:%j reason:%j", this._socket._id, this._socket.nsp);
+            this.emit(WebSocketProtocol.events.DISCONNECTED, reason);
         });
 
         this._socketHandlers.set("error", (error) => {
@@ -223,7 +225,7 @@ export class WebSocketProtocol extends DfiEventObject {
 
         this._socketHandlers.set("reconnect_error", (error) => {
             this.loggerS.debug("socket reconnect_error  - Fired upon a reconnection attempt error %s", error.message);
-            this.emit(WebSocketProtocol.events.ERROR, new Error("reconnect error"));
+            this.emit(WebSocketProtocol.events.ERROR, error instanceof Error ? error : new Error("reconnect error"));
         });
 
         this._socketHandlers.set("reconnect_failed", () => {
