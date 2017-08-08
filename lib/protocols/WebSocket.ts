@@ -223,9 +223,15 @@ export class WebSocketProtocol extends DfiEventObject {
             this.loggerS.debug("socket reconnecting  - Fired upon an attempt to reconnect %s", reconnectionNumber);
         });
 
-        this._socketHandlers.set("reconnect_error", (error) => {
-            this.loggerS.debug("socket reconnect_error  - Fired upon a reconnection attempt error %s", error.message);
-            this.emit(WebSocketProtocol.events.ERROR, error instanceof Error ? error : new Error("reconnect error"));
+        this._socketHandlers.set("reconnect_error", (errorUp) => {
+            this.loggerS.debug("socket reconnect_error  - Fired upon a reconnection attempt error %s", errorUp.message);
+            const error = new Error("reconnect error");
+            if (errorUp) {
+                Object.assign(error, {description: errorUp});
+            } else {
+                const x = 1;
+            }
+            this.emit(WebSocketProtocol.events.ERROR, error);
         });
 
         this._socketHandlers.set("reconnect_failed", () => {

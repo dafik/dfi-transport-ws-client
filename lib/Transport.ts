@@ -1,5 +1,5 @@
 import {DfiEventObject, DfiUtil} from "local-dfi-base";
-import {IIoTransportOptions, ITransportOptions, IWebSocketProtocolOptions} from "./interfaces";
+import {IIoTransportOptions, ITransportOptions, IWebSocketProtocolOptions, NotAFunction} from "./interfaces";
 import WebSocketProtocol from "./protocols/WebSocket";
 
 
@@ -175,8 +175,8 @@ abstract class Transport extends DfiEventObject {
         throw new Error('not implemented yet')
     }
 
-    public send(action: string, data?: {}, callback?: (...args) => void) {
-        this._ws.send(action, data, callback);
+    public send<T extends NotAFunction>(action: string, data?: T, callback?: (...args) => void, context?: any) {
+        this._ws.send(action, data, callback, context);
     }
 
     protected _prepareWsHandlers() {
