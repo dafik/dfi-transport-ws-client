@@ -1,7 +1,7 @@
 import io = require("socket.io-client");
 import {DfiEventObject, DfiUtil} from "local-dfi-base";
 import DebugLogger from "local-dfi-debug-logger";
-import {IIoSocket, IIoTransportOptions, IWebSocketProtocolOptions, NotAFunction} from "../interfaces";
+import {IIoSocket, IIoTransportOptions, IWebSocketProtocolOptions} from "../interfaces";
 
 const PROP_SOCKET_STD_HANDLERS = "socketHandlers";
 const PROP_MANAGER_STD_HANDLERS = "managerHandlers";
@@ -175,7 +175,7 @@ export class WebSocketProtocol extends DfiEventObject {
         }
     }
 
-    public send<T extends NotAFunction>(action: string, data?: T, ackFn?: (...args) => void, context?: any) {
+    public send(action: string, data?: any, ackFn?: (...args) => void, context?: any) {
         const socket = this._socket;
         if (socket) {
             if (typeof ackFn === "function") {
