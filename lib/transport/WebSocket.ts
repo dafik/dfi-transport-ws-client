@@ -14,7 +14,7 @@ const PROP_LOGGER_MANAGER = "loggerM";
 
 const PROP_TRANSPORT_OPTIONS = "transportOptions";
 
-export class WebSocketProtocol extends DfiEventObject {
+export class WebSocketTransport extends DfiEventObject {
 
     public static get events() {
         return EVENTS;
@@ -197,18 +197,18 @@ export class WebSocketProtocol extends DfiEventObject {
         this._socketHandlers.set("connect", () => {
             this.loggerS.info("socket connect  - Fired upon connecting s:%j n:%j", this._socket.id, this._socket.nsp);
             this._socket._id = this._socket.id;
-            this.emit(WebSocketProtocol.events.CONNECTED, this);
+            this.emit(WebSocketTransport.events.CONNECTED, this);
 
         });
 
         this._socketHandlers.set("disconnect", (reason) => {
             this.loggerS.debug("socket disconnect  - Fired upon a disconnection s:%j n:%j reason:%j", this._socket._id, this._socket.nsp);
-            this.emit(WebSocketProtocol.events.DISCONNECTED, reason);
+            this.emit(WebSocketTransport.events.DISCONNECTED, reason);
         });
 
         this._socketHandlers.set("error", (error) => {
             this.loggerS.debug("socket error  - Fired upon a connection error");
-            this.emit(WebSocketProtocol.events.ERROR, error);
+            this.emit(WebSocketTransport.events.ERROR, error);
         });
 
         this._socketHandlers.set("reconnect", (reconnectionNumber) => {
@@ -231,13 +231,13 @@ export class WebSocketProtocol extends DfiEventObject {
             } else {
                 const x = 1;
             }
-            this.emit(WebSocketProtocol.events.ERROR, error);
+            this.emit(WebSocketTransport.events.ERROR, error);
         });
 
         this._socketHandlers.set("reconnect_failed", () => {
             this.loggerS.debug("socket reconnect_failed  - Fired when could not reconnect within reconnectionAttempts");
 
-            this.emit(WebSocketProtocol.events.ERROR, new Error("reconnect failed"));
+            this.emit(WebSocketTransport.events.ERROR, new Error("reconnect failed"));
         });
     }
 
@@ -330,4 +330,4 @@ const EVENTS = {
     UPDATE: Symbol("lt:update")
 };
 
-export default WebSocketProtocol;
+export default WebSocketTransport;

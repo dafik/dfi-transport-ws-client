@@ -17,21 +17,6 @@ const config: ITransportOptions = {
         },
         port: 22223,
     }
-
-    /*  liveConfig: {
-          transport: {
-              host: "localhost",
-              port: 2233,
-              protocol: "http"
-          }
-      },
-      twConfig: {
-          transport: {
-              host: "localhost",
-              port: 2333,
-              protocol: "http"
-          }
-      }*/
 };
 
 describe("Client only", () => {

@@ -1,11 +1,9 @@
 import TransportImpl from "./mock/TransportImpl";
 import {ITransportOptions} from "../lib/interfaces";
 import Transport from "../lib/Transport";
-import DebugLogger from "local-dfi-debug-logger/debugLogger";
 import TestServer from "./mock/TestServer";
 import * as assert from "assert";
 
-const logger = new DebugLogger("test");
 const cloneLiteral = (literal) => {
     return JSON.parse(JSON.stringify(literal))
 }
@@ -20,22 +18,6 @@ const config: ITransportOptions = {
         },
         port: 22223,
     }
-
-    /*  liveConfig: {
-          transport: {
-              host: "localhost",
-              port: 2233,
-              protocol: "http"
-          }
-      },
-      twConfig: {
-          transport: {
-              host: "localhost",
-              port: 2333,
-              protocol: "http"
-          }
-      }*/
-
 };
 
 

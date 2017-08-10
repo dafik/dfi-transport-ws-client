@@ -1,15 +1,12 @@
 import {DfiEventObject, DfiUtil} from "local-dfi-base";
 import {IIoTransportOptions, ITransportOptions, IWebSocketProtocolOptions} from "./interfaces";
-import WebSocketProtocol from "./protocols/WebSocket";
+import {WebSocketTransport} from "./transport/WebSocket";
 
 
 const PROP_NAMESPACE = "namespace";
-
 const PROP_TIMERS = "timers";
-
 const PROP_IO_OPTIONS = "ioTransportOptions";
 const PROP_WEBSOCKET = "websocket";
-
 const PROP_PROTOCOL_HANDLERS = "_protocolHandlers";
 const PROP_WS_HANDLERS = "_wsHandlers";
 
@@ -35,7 +32,7 @@ abstract class Transport extends DfiEventObject {
         return this.getProp(PROP_WS_HANDLERS);
     }
 
-    private get _ws(): WebSocketProtocol {
+    private get _ws(): WebSocketTransport {
         return this.getProp(PROP_WEBSOCKET);
     }
 
@@ -65,7 +62,7 @@ abstract class Transport extends DfiEventObject {
             transportOptions: this._ioOptions
         };
 
-        this.setProp(PROP_WEBSOCKET, new WebSocketProtocol(config));
+        this.setProp(PROP_WEBSOCKET, new WebSocketTransport(config));
     }
 
     public destroy() {
@@ -180,15 +177,15 @@ abstract class Transport extends DfiEventObject {
     }
 
     protected _prepareWsHandlers() {
-        this._wsHandlers.set(WebSocketProtocol.events.CONNECTED, () => {
+        this._wsHandlers.set(WebSocketTransport.events.CONNECTED, () => {
             this.emit(Transport.events.CONNECTED, this);
         });
 
-        this._wsHandlers.set(WebSocketProtocol.events.DISCONNECTED, (reason) => {
+        this._wsHandlers.set(WebSocketTransport.events.DISCONNECTED, (reason) => {
             this.emit(Transport.events.DISCONNECTED, reason);
         });
 
-        this._wsHandlers.set(WebSocketProtocol.events.ERROR, (error) => {
+        this._wsHandlers.set(WebSocketTransport.events.ERROR, (error) => {
             this.emit(Transport.events.ERROR, error);
         });
     }
