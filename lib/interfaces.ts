@@ -8,7 +8,8 @@ export interface IIoTransportOptions extends IDfiBaseObjectConfig {
 
 export interface ITransportOptions extends IDfiBaseObjectConfig {
     ioTransportOptions: IIoTransportOptions;
-    namespace?: string;
+    nspName?: string;
+    // namespace?: string;
 }
 
 export interface IWebSocketProtocolOptions extends IDfiBaseObjectConfig {
