@@ -48,6 +48,7 @@ abstract class Transport extends DfiEventObject {
     constructor(options: ITransportOptions) {
         options = {
             loggerName: "tr:",
+            nspName: "",
             ...options
         };
         super(options);
