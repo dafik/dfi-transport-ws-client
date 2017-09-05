@@ -8,6 +8,7 @@ const PROP_MANAGER_STD_HANDLERS = "managerHandlers";
 const PROP_PROXY_HANDLERS = "proxyHandlers";
 const PROP_SOCKET = "socket";
 const PROP_MANAGER = "manager";
+const PROP_NAMESPACE = "nspName";
 
 const PROP_LOGGER_SOCKET = "loggerS";
 const PROP_LOGGER_MANAGER = "loggerM";
@@ -111,7 +112,7 @@ export class WebSocketTransport extends DfiEventObject {
         if (ioTransportOptions.port !== 80 && ioTransportOptions.port !== 443) {
             url = ioTransportOptions.host + ":" + ioTransportOptions.port;
         }
-        url = url + "/" + (this.getProp("namespace") || "");
+        url = url + "/" + (this.getProp(PROP_NAMESPACE) || "");
         socket = io(url, opts);
 
         this.setProp(PROP_SOCKET, socket);

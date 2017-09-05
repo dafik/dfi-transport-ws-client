@@ -3,7 +3,7 @@ import {IIoTransportOptions, ITransportOptions, IWebSocketProtocolOptions} from 
 import {WebSocketTransport} from "./transport/WebSocket";
 
 
-const PROP_NAMESPACE = "namespace";
+const PROP_NAMESPACE = "nspName";
 const PROP_TIMERS = "timers";
 const PROP_IO_OPTIONS = "ioTransportOptions";
 const PROP_WEBSOCKET = "websocket";
@@ -16,7 +16,7 @@ abstract class Transport extends DfiEventObject {
     }
 
 
-    public get namespace(): string {
+    public get nspName(): string {
         return this.getProp(PROP_NAMESPACE);
     }
 
@@ -58,7 +58,7 @@ abstract class Transport extends DfiEventObject {
 
         const config: IWebSocketProtocolOptions = {
             loggerName: this.logger.name.replace(this.constructor.name, "") + "ws:",
-            namespace: this.namespace,
+            nspName: this.nspName,
             transportOptions: this._ioOptions
         };
 
