@@ -80,9 +80,7 @@ abstract class Transport extends DfiEventObject {
     }
 
     public start(callbackFn?, context?) {
-
         this.logger.info("start");
-
 
         this._prepareWsHandlers();
 
@@ -95,82 +93,13 @@ abstract class Transport extends DfiEventObject {
         });
     }
 
-    public stop(callbackFn?, context?) {
+    public stop() {
         this.logger.info("stop");
         this._unbindProtocolHandlers();
 
-        /*
-        todo move to client implemtnataion
-        const onSocketUnsubscribe = () => {
-            this.setProp(PROP_SUBSCRIBED, false);
-            this._socket.disconnect();
-            this.setProp(PROP_SOCKET_INITIALIZED, false);
-            this._socket.removeAllListeners();
-            DfiUtil.maybeCallbackOnce(callbackFn, context);
-        };
-
-
-
-        if (typeof this.ws !== "undefined" && this.ws.connected) {
-            // TODO unregister from service
-            this.send(LiveTransport.live.Actions.UN_REGISTER, this.appState.id, onSocketUnsubscribe);
-        }*/
-
-        this._ws.stop((err) => {
-
-            this._unbindWsHandlers();
-
-            this.logger.info("started");
-            DfiUtil.maybeCallbackOnce(callbackFn, context, err);
-        });
-    }
-
-    /*
-        todo move to client implemtnataion
-
-    public immediateStop() {
-        this.logger.info("immediate stop");
-        this._unbindProtocolHandlers();
-
-        this.send(LiveTransport.live.Actions.IMMEDIATE_STOP, this.appState.id);
-
-        this.ws.immediateStop();
-        this.logger.info("immediate stopped");
-
-    }
-
-    public connect(handlers: Map<string, (...args) => void>) {
-
-        this.setProp(PROP_HANDLERS, handlers);
-        const socket = this.liveService.connectNamespace(this.namespace);
-        this.socket = socket;
-
-        this._initSocket(socket);
-
-        handlers.forEach((handler, event) => {
-            socket.on(event, handler);
-        });
-
-        if (!socket.connected && !socket.io.autoConnect) {
-            socket.open();
-        }
-    }
-
-    public disconnect(handlers: Map<string, (...args) => void>) {
-        const socket = this.socket;
-        if (socket) {
-            handlers.forEach((handler, event) => {
-                socket.on(event, handler);
-            });
-            if (socket.connected && socket.io.autoConnect) {
-                socket.disconnect();
-            }
-        }
-    }
-                 */
-
-    public connectNamespace(namespace: string) {
-        throw new Error('not implemented yet')
+        this._ws.stop();
+        this._unbindWsHandlers();
+        this.logger.info("started");
     }
 
     public send(action: string, data?: any, callback?: (...args) => void, context?: any) {

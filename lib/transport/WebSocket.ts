@@ -131,10 +131,8 @@ export class WebSocketTransport extends DfiEventObject {
         }
     }
 
-    public stop(callback?, thisp?) {
-
+    public stop() {
         this.logger.info("stop");
-
         if (this._socket) {
             this._socket.disconnect();
 
@@ -147,12 +145,10 @@ export class WebSocketTransport extends DfiEventObject {
             Object.keys(this._manager.nsps).forEach((nsp) => {
                 delete this._manager.nsps[nsp];
             });
-
             this._manager.off("open");
             this._manager.off("connect_error");
             this._unbindManagerStsHandlers();
         }
-        DfiUtil.maybeCallbackOnce(callback, thisp);
     }
 
     /*
