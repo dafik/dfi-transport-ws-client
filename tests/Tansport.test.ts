@@ -95,13 +95,8 @@ describe("Client only", () => {
 
         transport.start((err) => {
             if (err) {
-                transport.stop((err) => {
-                    if (err) {
-                        done(err);
-                        return;
-                    }
-                    done();
-                });
+                transport.stop();
+                done();
             }
         });
 
@@ -155,24 +150,10 @@ describe("Client only", () => {
         })
     });
 
-    it("create namespace", (done) => {
-        const transport = new TransportImpl(config);
-
-        assert.throws(() => {
-            transport.connectNamespace("testNamespace");
-        });
-
-        transport.destroy();
-        done();
-
-    })
 
     it("stop when not started", (done) => {
         const transport = new TransportImpl(config);
 
-        assert.throws(() => {
-            transport.connectNamespace("testNamespace");
-        });
 
         assert.doesNotThrow((err) => {
             transport.stop();

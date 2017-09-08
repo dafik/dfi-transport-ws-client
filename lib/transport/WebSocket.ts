@@ -225,8 +225,6 @@ export class WebSocketTransport extends DfiEventObject {
             const error = new Error("reconnect error");
             if (errorUp) {
                 Object.assign(error, {description: errorUp});
-            } else {
-                const x = 1;
             }
             this.emit(WebSocketTransport.events.ERROR, error);
         });
