@@ -199,7 +199,7 @@ export class WebSocketTransport extends DfiEventObject {
         });
 
         this._socketHandlers.set("disconnect", (reason) => {
-            this.loggerS.debug("socket disconnect  - Fired upon a disconnection s:%j n:%j reason:%j", this._socket._id, this._socket.nsp);
+            this.loggerS.debug("socket disconnect  - Fired upon a disconnection s:%j n:%j reason:%j", this._socket._id, this._socket.nsp, reason);
             this.emit(WebSocketTransport.events.DISCONNECTED, reason);
 
             if (!this._manager.reconnection()) {
