@@ -99,7 +99,9 @@ abstract class Transport extends DfiEventObject {
 
         this._ws.stop();
         this._unbindWsHandlers();
-        this.logger.info("started");
+        this._wsHandlers.clear();
+
+        this.logger.info("stopped");
     }
 
     public send(action: string, data?: any, callback?: (...args) => void, context?: any) {
