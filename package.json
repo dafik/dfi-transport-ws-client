@@ -2,7 +2,7 @@
   "name": "local-dfi-transport-ws-client",
   "description": "abstract socket.io transport",
   "author": "zbyszek.wieczorek@gmail.com",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "dependencies": {
     "local-dfi-base": "*",
     "local-dfi-debug-logger": "*",
