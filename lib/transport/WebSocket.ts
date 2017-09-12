@@ -21,6 +21,10 @@ export class WebSocketTransport extends DfiEventObject {
         return EVENTS;
     }
 
+    public set nspName(name: string) {
+        this.setProp(PROP_NAMESPACE, name);
+    }
+
     private get _socketHandlers(): Map<string, (...args) => void> {
         return this.getProp(PROP_SOCKET_STD_HANDLERS);
     }

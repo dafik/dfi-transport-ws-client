@@ -20,9 +20,10 @@ abstract class Transport extends DfiEventObject {
         return this.getProp(PROP_NAMESPACE);
     }
 
-    /*    public set namespace(name: string) {
-            this.setProp(PROP_NAMESPACE, name);
-        }*/
+    public set nspName(name: string) {
+        this.setProp(PROP_NAMESPACE, name);
+        this._ws.nspName = name;
+    }
 
     protected get _protocolHandlers(): Map<string, (...args) => void> {
         return this.getProp(PROP_PROTOCOL_HANDLERS);
