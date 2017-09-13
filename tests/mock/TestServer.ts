@@ -1,4 +1,4 @@
-import WebsocketProtocol from "local-cc-live-server/lib/transports/protocols/websocket"
+import WebsocketProtocol from "local-cc-live-server/lib/transports/transport/websocket"
 import {IDfiLiveWebsocketProtocolOptions} from "local-cc-live-server/lib/interfaces";
 import {DfiUtil} from "local-dfi-base/src/dfiUtil";
 
