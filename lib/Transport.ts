@@ -37,6 +37,14 @@ abstract class Transport extends DfiEventObject {
         return this.getProp(PROP_WS_HANDLERS);
     }
 
+    protected get _useTimers(): boolean {
+        return this.getProp(PROP_USE_TIMERS);
+    }
+
+    private get _timeout(): number {
+        return this.getProp(PROP_TIMEOUT);
+    }
+
     private get _ws(): WebSocketTransport {
         return this.getProp(PROP_WEBSOCKET);
     }
@@ -49,13 +57,6 @@ abstract class Transport extends DfiEventObject {
         return this.getProp(PROP_TIMERS);
     }
 
-    private get _useTimers(): boolean {
-        return this.getProp(PROP_USE_TIMERS);
-    }
-
-    private get _timeout(): number {
-        return this.getProp(PROP_TIMEOUT);
-    }
 
     constructor(options: ITransportOptions) {
         options = {
