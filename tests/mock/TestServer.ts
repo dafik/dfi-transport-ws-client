@@ -30,7 +30,15 @@ class TestServer {
                 ack(data);
             });
         });
+        const nsp = this.proxy.createNamespace("testNsp");
+
+        nsp.on("connection", (socket) => {
+            socket.on("testNspAction", (data, ack) => {
+                ack(data);
+            });
+        });
         this.proxy.listen();
+
     }
 
     destroy(callbackFn?: (err?: Error) => void, contex?: any) {

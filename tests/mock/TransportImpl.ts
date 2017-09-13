@@ -22,8 +22,8 @@ export default class TransportImpl extends Transport {
         });
     }
 
-    public _createTimer(name: string, time: number, callbackFn?: (...arg) => void, context?): any {
-        return super._createTimer(name, time, callbackFn, context);
+    public _createTimer(time: number, description?: string, callbackFn?: (...arg) => void, context?): any {
+        return super._createTimer(time, description, callbackFn, context);
     }
 
     public _clearTimer(name): any {

@@ -51,6 +51,34 @@ describe("Client with server", () => {
             }
         });
     });
+    it("start and connect to running namspace", (done) => {
+        testServer = new TestServer();
+
+        const localConfig: ITransportOptions = cloneLiteral(config);
+        const transport = new TransportImpl(localConfig);
+        transport.on(Transport.events.ERROR, (err) => {
+            testServer.destroy();
+            done(err);
+        });
+
+        transport.on(Transport.events.CONNECTED, (tr) => {
+            testServer.proxy.close("END TEST", () => {
+                testServer.destroy();
+                transport.destroy();
+                done();
+            });
+
+        });
+
+        transport.nspName = "testNsp";
+
+        transport.start((err) => {
+            if (err) {
+                transport.destroy();
+                done();
+            }
+        });
+    });
     it("start and connect to not running", (done) => {
 
         const localConfig: ITransportOptions = cloneLiteral(config);
@@ -169,8 +197,78 @@ describe("Client with server", () => {
         transport.on(Transport.events.CONNECTED, (tr) => {
 
             const data = "testdata";
-            transport.send("testaction", data, (data1) => {
+            transport.send("testaction", data, (err?: Error, data1?) => {
+                assert.ifError(err);
                 assert.equal(data1, data, "response not equal");
+
+                testServer.proxy.close("END TEST", () => {
+                    testServer.destroy();
+                    transport.destroy();
+                    done();
+                });
+            });
+
+
+        });
+
+        transport.start((err) => {
+            if (err) {
+                transport.destroy();
+                done();
+            }
+        });
+    });
+    it("start connect and send with ack namspace", (done) => {
+        testServer = new TestServer();
+
+        const localConfig: ITransportOptions = cloneLiteral(config);
+        const transport = new TransportImpl(localConfig);
+        transport.on(Transport.events.ERROR, (err) => {
+            testServer.destroy();
+            done(err);
+        });
+
+        transport.on(Transport.events.CONNECTED, (tr) => {
+
+            const data = "testdata";
+            transport.send("testNspAction", data, (err?: Error, data1?) => {
+                assert.ifError(err);
+                assert.equal(data1, data, "response not equal");
+
+                testServer.proxy.close("END TEST", () => {
+                    testServer.destroy();
+                    transport.destroy();
+                    done();
+                });
+            });
+        });
+
+        transport.nspName = "testNsp"
+
+        transport.start((err) => {
+            if (err) {
+                transport.destroy();
+                done();
+            }
+        });
+    });
+
+    it("start connect and send with ack timeout", (done) => {
+        testServer = new TestServer();
+
+        const localConfig: ITransportOptions = cloneLiteral(config);
+        const transport = new TransportImpl(localConfig);
+        transport.on(Transport.events.ERROR, (err) => {
+            testServer.destroy();
+            done(err);
+        });
+
+        transport.on(Transport.events.CONNECTED, (tr) => {
+
+            const data = "testdata";
+            transport.send("test", data, (err?: Error, data1?) => {
+                assert.notEqual(err, null);
+                assert.ok(err instanceof Error);
 
                 testServer.proxy.close("END TEST", () => {
                     testServer.destroy();

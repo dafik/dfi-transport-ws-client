@@ -7,8 +7,12 @@ const PROP_NAMESPACE = "nspName";
 const PROP_TIMERS = "timers";
 const PROP_IO_OPTIONS = "ioTransportOptions";
 const PROP_WEBSOCKET = "websocket";
+const PROP_USE_TIMERS = "useTimers";
+const PROP_TIMEOUT = "timeout";
+
 const PROP_PROTOCOL_HANDLERS = "_protocolHandlers";
 const PROP_WS_HANDLERS = "_wsHandlers";
+
 
 abstract class Transport extends DfiEventObject {
     static get events() {
@@ -41,22 +45,32 @@ abstract class Transport extends DfiEventObject {
         return this.getProp(PROP_IO_OPTIONS);
     }
 
-    private get _timers(): Map<string, NodeJS.Timer> {
+    private get _timers(): Set<NodeJS.Timer> {
         return this.getProp(PROP_TIMERS);
     }
 
+    private get _useTimers(): boolean {
+        return this.getProp(PROP_USE_TIMERS);
+    }
+
+    private get _timeout(): number {
+        return this.getProp(PROP_TIMEOUT);
+    }
 
     constructor(options: ITransportOptions) {
         options = {
             loggerName: "tr:",
             nspName: "",
+            useTimers: true,
+            timeout: 500,
             ...options
         };
         super(options);
 
         this.setProp(PROP_PROTOCOL_HANDLERS, new Map());
         this.setProp(PROP_WS_HANDLERS, new Map());
-        this.setProp(PROP_TIMERS, new Map());
+
+        this.setProp(PROP_TIMERS, new Set());
 
         const config: IWebSocketProtocolOptions = {
             loggerName: this.logger.name.replace(this.constructor.name, "") + "ws:",
@@ -68,14 +82,12 @@ abstract class Transport extends DfiEventObject {
     }
 
     public destroy() {
+        [...this._timers].forEach((timer) => {
+            this._clearTimer(timer);
+        });
 
-        for (const timerName of this._timers.keys()) {
-            this._clearTimer(timerName);
-        }
-
-        const ws = this._ws;
-        if (ws) {
-            ws.destroy();
+        if (this._ws) {
+            this._ws.destroy();
         }
         super.destroy();
     }
@@ -105,8 +117,28 @@ abstract class Transport extends DfiEventObject {
         this.logger.info("stopped");
     }
 
-    public send(action: string, data?: any, callback?: (...args) => void, context?: any) {
-        this._ws.send(action, data, callback, context);
+    public send(action: string, data?: any, ack?: (err: Error, ...args) => void, context?: any) {
+        if (ack && this._useTimers) {
+            const description = "timeout for \"" + action + '"';
+            let fired = false;
+            const timer = this._createTimer(this._timeout, description, () => {
+                fired = true;
+                this._clearTimer(timer);
+                ack.call(context, new Error("no ack: " + description));
+
+            });
+
+            this._ws.send(action, data, function callback(...args) {
+                if (!fired) {
+                    clearTimeout(timer);
+                    ack.call(context, null, ...args)
+                }
+            });
+
+        } else {
+            this._ws.send(action, data, ack, context);
+        }
+
     }
 
     protected _prepareWsHandlers() {
@@ -123,19 +155,18 @@ abstract class Transport extends DfiEventObject {
         });
     }
 
-    protected _createTimer(name: string, time: number, callbackFn?: (...arg) => void, context?) {
-
-        this._timers.set(name, setTimeout(() => {
-            this.logger.error("timeout for ack: " + name);
+    protected _createTimer(time: number, descripton?: string, callbackFn?: (...arg) => void, context?): NodeJS.Timer {
+        const timer = setTimeout(() => {
+            this.logger.error("timeout for ack: %s", descripton);
             DfiUtil.maybeCallbackOnce(callbackFn, context);
-        }, time));
+        }, time);
+        this._timers.add(timer);
+        return timer;
     }
 
-    protected _clearTimer(name) {
-        if (this._timers.has(name)) {
-            clearTimeout(this._timers.get(name));
-            this._timers.delete(name);
-        }
+    protected _clearTimer(timer: NodeJS.Timer) {
+        clearTimeout(timer);
+        this._timers.delete(timer);
     }
 
     private _bindWsHandlers() {

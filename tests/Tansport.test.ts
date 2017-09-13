@@ -134,16 +134,15 @@ describe("Client only", () => {
         const transport = new TransportImpl(config);
 
 
-        transport._createTimer("test1", 50, () => {
+        const timer = transport._createTimer(50, "timer1", () => {
             done(new Error("timer should not fire"));
         });
-        transport._clearTimer("test1");
+        transport._clearTimer(timer);
 
 
-        transport._createTimer("test2", 50, () => {
-            transport._createTimer("test2", 50, () => {
+        transport._createTimer(50, "timer2", () => {
+            transport._createTimer(50, "timer3", () => {
                 done(new Error("timer should not fire"));
-
             });
             transport.destroy();
             done();

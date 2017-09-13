@@ -9,6 +9,8 @@ export interface IIoTransportOptions extends IDfiBaseObjectConfig {
 export interface ITransportOptions extends IDfiBaseObjectConfig {
     ioTransportOptions: IIoTransportOptions;
     nspName?: string;
+    useTimers?: boolean;
+    timeout?: number;
 }
 
 export interface IWebSocketProtocolOptions extends IDfiBaseObjectConfig {
