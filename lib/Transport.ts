@@ -41,7 +41,7 @@ abstract class Transport extends DfiEventObject {
         return this.getProp(PROP_USE_TIMERS);
     }
 
-    private get _timeout(): number {
+    protected get _timeout(): number {
         return this.getProp(PROP_TIMEOUT);
     }
 
