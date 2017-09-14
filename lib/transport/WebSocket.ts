@@ -138,6 +138,12 @@ export class WebSocketTransport extends DfiEventObject {
         if (this._manager.readyState !== "open") {
             this._manager.on("open", openHandler);
             this._manager.on("connect_error", openHandler);
+            this.on(WebSocketTransport.events.STOP, () => {
+                if (this._manager) {
+                    this._manager.off("open", openHandler);
+                    this._manager.off("connect_error", openHandler);
+                }
+            })
         } else {
             openHandler()
         }
@@ -145,6 +151,8 @@ export class WebSocketTransport extends DfiEventObject {
 
     public stop() {
         this.logger.info("stop");
+        this.emit(WebSocketTransport.events.STOP);
+
         if (this._socket) {
             this._socket.disconnect();
 
@@ -159,6 +167,7 @@ export class WebSocketTransport extends DfiEventObject {
             this._unbindManagerStsHandlers();
             this.removeProp(PROP_MANAGER);
         }
+
     }
 
     /*
@@ -335,6 +344,7 @@ const EVENTS = {
     ERROR: Symbol("lt:error"),
     REGISTERED: Symbol("lt:registered"),
     STARTED: Symbol("lt:started"),
+    STOP: Symbol("lt:stop"),
     SUB: Symbol("lt:subscription"),
     UN_REGISTERED: Symbol("lt:unRegistered"),
     UPDATE: Symbol("lt:update")
