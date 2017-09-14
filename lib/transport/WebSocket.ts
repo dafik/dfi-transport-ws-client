@@ -25,6 +25,10 @@ export class WebSocketTransport extends DfiEventObject {
         this.setProp(PROP_NAMESPACE, name);
     }
 
+    public get nspName(): string {
+        return this.getProp(PROP_NAMESPACE);
+    }
+
     private get _socketHandlers(): Map<string, (...args) => void> {
         return this.getProp(PROP_SOCKET_STD_HANDLERS);
     }
@@ -83,7 +87,7 @@ export class WebSocketTransport extends DfiEventObject {
 
     public start(callback?, context?) {
 
-        const openHandler = (err) => {
+        const openHandler = (err?: Error) => {
 
             this._manager.off("open", openHandler);
             this._manager.off("connect_error", openHandler);
@@ -127,11 +131,15 @@ export class WebSocketTransport extends DfiEventObject {
 
         this._bindProxyHandlers();
 
-        this._manager.on("open", openHandler);
-        this._manager.on("connect_error", openHandler);
-
         if (!this._socket.connected && !this._socket.io.autoConnect) {
             this._socket.open();
+        }
+
+        if (this._manager.readyState !== "open") {
+            this._manager.on("open", openHandler);
+            this._manager.on("connect_error", openHandler);
+        } else {
+            openHandler()
         }
     }
 
@@ -144,14 +152,12 @@ export class WebSocketTransport extends DfiEventObject {
             this._unbindSocketStdHandlers();
 
             this._socket.removeAllListeners();
+            this.removeProp(PROP_SOCKET);
         }
         if (this._manager) {
-            Object.keys(this._manager.nsps).forEach((nsp) => {
-                delete this._manager.nsps[nsp];
-            });
-            this._manager.off("open");
-            this._manager.off("connect_error");
+            delete this._manager.nsps["/" + this.nspName];
             this._unbindManagerStsHandlers();
+            this.removeProp(PROP_MANAGER);
         }
     }
 

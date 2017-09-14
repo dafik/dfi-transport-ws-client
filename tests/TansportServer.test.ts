@@ -287,4 +287,58 @@ describe("Client with server", () => {
             }
         });
     });
+    it("start two transport same connection", (done) => {
+        testServer = new TestServer();
+
+        const localConfig: ITransportOptions = cloneLiteral(config);
+        localConfig.ioTransportOptions.ioOptions.forceNew = false;
+
+
+        const transport = new TransportImpl(localConfig);
+        transport.on(Transport.events.ERROR, (err) => {
+            testServer.destroy();
+            done(err);
+        });
+
+
+        const transport1 = new TransportImpl(localConfig);
+        transport1.on(Transport.events.ERROR, (err) => {
+            testServer.destroy();
+            done(err);
+        });
+        transport1.nspName = "testNsp";
+
+
+        transport.start((err) => {
+            if (err) {
+                transport.destroy();
+                done();
+            }
+            process.nextTick(() => {
+                transport1.start((err) => {
+                    if (err) {
+                        transport1.destroy();
+                        done();
+                    }
+                });
+            });
+        });
+        transport1.on(TransportImpl.events.CONNECTED, () => {
+            transport1.stop();
+        })
+        transport1.on(TransportImpl.events.DISCONNECTED, () => {
+            process.nextTick(() => {
+                transport1.destroy();
+                transport.stop();
+            });
+        })
+        transport.on(TransportImpl.events.DISCONNECTED, () => {
+            process.nextTick(() => {
+                transport.destroy();
+                done();
+            });
+
+        })
+
+    });
 });
