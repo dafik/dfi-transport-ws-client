@@ -132,7 +132,7 @@ abstract class Transport extends DfiEventObject {
             this._ws.send(action, data, (...args) => {
                 if (!fired) {
                     clearTimeout(timer);
-                    ack.call(context, null, ...args)
+                    ack.apply(context, [null, ...args]);
                 }
             });
 
