@@ -93,7 +93,7 @@ export class WebSocketTransport extends DfiEventObject {
             this._manager.off("connect_error", openHandler);
 
             if (err) {
-                this.logger.info("on error");
+                this.logger.error("on error");
                 if (this._manager.reconnection()) {
                     DfiUtil.maybeCallbackOnce(callback, context);
                     return;
@@ -211,7 +211,7 @@ export class WebSocketTransport extends DfiEventObject {
 
     private _prepareSocketStdHandlers() {
         this._socketHandlers.set("connect", () => {
-            this.loggerS.info("socket connect  - Fired upon connecting s:%j n:%j", this._socket.id, this._socket.nsp);
+            this.loggerS.debug("socket connect  - Fired upon connecting s:%j n:%j", this._socket.id, this._socket.nsp);
             this._socket._id = this._socket.id;
             this.emit(WebSocketTransport.events.CONNECTED, this);
 

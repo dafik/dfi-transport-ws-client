@@ -101,8 +101,12 @@ abstract class Transport extends DfiEventObject {
         this._bindWsHandlers();
         this._bindProtocolHandlers();
 
-        this._ws.start((err) => {
-            this.logger.info("started");
+        this._ws.start((err?: Error) => {
+            if (err) {
+                this.logger.error("error %o", err);
+            } else {
+                this.logger.info("started");
+            }
             DfiUtil.maybeCallbackOnce(callbackFn, context, err);
         });
     }
