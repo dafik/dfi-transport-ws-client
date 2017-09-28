@@ -103,7 +103,7 @@ abstract class Transport extends DfiEventObject {
 
         this._ws.start((err?: Error) => {
             if (err) {
-                this.logger.error("error %o", err);
+                this.logger.error("error: %o", DfiUtil.formatError(err));
             } else {
                 this.logger.info("started");
             }
@@ -162,7 +162,7 @@ abstract class Transport extends DfiEventObject {
 
     protected _createTimer(time: number, descripton?: string, callbackFn?: (...arg) => void, context?): NodeJS.Timer {
         const timer = setTimeout(() => {
-            this.logger.error("timeout for ack: %s", descripton);
+            this.logger.error("timeout for ack: %o", descripton);
             DfiUtil.maybeCallbackOnce(callbackFn, context);
         }, time);
         this._timers.add(timer);

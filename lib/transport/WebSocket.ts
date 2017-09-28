@@ -93,7 +93,7 @@ export class WebSocketTransport extends DfiEventObject {
             this._manager.off("connect_error", openHandler);
 
             if (err) {
-                this.logger.error("on error");
+                this.logger.error("on error: %o", DfiUtil.formatError(err));
                 if (this._manager.reconnection()) {
                     DfiUtil.maybeCallbackOnce(callback, context);
                     return;
@@ -204,21 +204,21 @@ export class WebSocketTransport extends DfiEventObject {
                 socket.emit(action, data);
             }
         } else {
-            this.logger.error("try to send: " + action + " without socket");
+            this.logger.error("try to send: %o without socket", action);
         }
     }
 
 
     private _prepareSocketStdHandlers() {
         this._socketHandlers.set("connect", () => {
-            this.loggerS.debug("socket connect  - Fired upon connecting s:%j n:%j", this._socket.id, this._socket.nsp);
+            this.loggerS.debug("socket connect  - Fired upon connecting s:%o n:%o", this._socket.id, this._socket.nsp);
             this._socket._id = this._socket.id;
             this.emit(WebSocketTransport.events.CONNECTED, this);
 
         });
 
         this._socketHandlers.set("disconnect", (reason) => {
-            this.loggerS.debug("socket disconnect  - Fired upon a disconnection s:%j n:%j reason:%j", this._socket._id, this._socket.nsp, reason);
+            this.loggerS.debug("socket disconnect  - Fired upon a disconnection s:%o n:%o reason:%o", this._socket._id, this._socket.nsp, reason);
             this.emit(WebSocketTransport.events.DISCONNECTED, reason);
 
             if (!this._manager.reconnection()) {
@@ -233,7 +233,7 @@ export class WebSocketTransport extends DfiEventObject {
         });
 
         this._socketHandlers.set("reconnect", (reconnectionNumber) => {
-            this.loggerS.debug("socket reconnect  - Fired upon a successful reconnection %s", reconnectionNumber);
+            this.loggerS.debug("socket reconnect  - Fired upon a successful reconnection %o", reconnectionNumber);
         });
 
         this._socketHandlers.set("reconnect_attempt", () => {
@@ -241,11 +241,11 @@ export class WebSocketTransport extends DfiEventObject {
         });
 
         this._socketHandlers.set("reconnecting", (reconnectionNumber) => {
-            this.loggerS.debug("socket reconnecting  - Fired upon an attempt to reconnect %s", reconnectionNumber);
+            this.loggerS.debug("socket reconnecting  - Fired upon an attempt to reconnect %o", reconnectionNumber);
         });
 
         this._socketHandlers.set("reconnect_error", (errorUp) => {
-            this.loggerS.debug("socket reconnect_error  - Fired upon a reconnection attempt error %s", errorUp.message);
+            this.loggerS.debug("socket reconnect_error  - Fired upon a reconnection attempt error %o", errorUp.message);
             const error = new Error("reconnect error");
             if (errorUp) {
                 Object.assign(error, {description: errorUp});
@@ -263,7 +263,7 @@ export class WebSocketTransport extends DfiEventObject {
     private _prepareManagerStdHandlers() {
 
         this._managerHandlers.set("connect_error", (error) => {
-            this.loggerM.debug("manager connect_error - Fired upon a connection error %s", error.message);
+            this.loggerM.debug("manager connect_error - Fired upon a connection error %o", error.message);
         });
 
         this._managerHandlers.set("connect_timeout", () => {
@@ -271,7 +271,7 @@ export class WebSocketTransport extends DfiEventObject {
         });
 
         this._managerHandlers.set("reconnect", (reconnectionNumber) => {
-            this.loggerM.debug("manager reconnect -  Fired upon a successful reconnection %j", reconnectionNumber);
+            this.loggerM.debug("manager reconnect -  Fired upon a successful reconnection %o", reconnectionNumber);
         });
 
         this._managerHandlers.set("reconnect_attempt", () => {
@@ -279,11 +279,11 @@ export class WebSocketTransport extends DfiEventObject {
         });
 
         this._managerHandlers.set("reconnecting", (reconnectionNumber) => {
-            this.loggerM.debug("manager reconnecting - Fired upon an attempt to reconnect  %j", reconnectionNumber);
+            this.loggerM.debug("manager reconnecting - Fired upon an attempt to reconnect  %o", reconnectionNumber);
         });
 
         this._managerHandlers.set("reconnect_error", (error) => {
-            this.loggerM.debug("manager reconnect_error - Fired upon a reconnection attempt error %s", error.message);
+            this.loggerM.debug("manager reconnect_error - Fired upon a reconnection attempt error %o", error.message);
         });
 
         this._managerHandlers.set("reconnect_failed", () => {
