@@ -120,7 +120,7 @@ export class WebSocketTransport extends DfiEventObject {
         if (ioTransportOptions.port !== 80 && ioTransportOptions.port !== 443) {
             url = ioTransportOptions.host + ":" + ioTransportOptions.port;
         }
-        url = url + "/" + (this.getProp(PROP_NAMESPACE) || "");
+        url = url + (this.getProp(PROP_NAMESPACE) !== "/" ? "/" + this.getProp(PROP_NAMESPACE) : "/");
         socket = io(url, opts);
 
         this.setProp(PROP_SOCKET, socket);

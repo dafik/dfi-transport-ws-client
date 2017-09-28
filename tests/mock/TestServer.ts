@@ -1,12 +1,12 @@
-import WebsocketProtocol from "local-cc-live-server/lib/transports/transport/websocket"
-import {IDfiLiveWebsocketProtocolOptions} from "local-cc-live-server/lib/interfaces";
+import WebsocketServer from "local-cc-live-server/lib/transports/transport/websocketServer"
+import {IDfiLiveWebsocketServerOptions} from "local-cc-live-server/lib/interfaces";
 import {DfiUtil} from "local-dfi-base/src/dfiUtil";
 
 class TestServer {
-    public proxy: WebsocketProtocol;
+    public proxy: WebsocketServer;
 
     constructor() {
-        const config: IDfiLiveWebsocketProtocolOptions = {
+        const config: IDfiLiveWebsocketServerOptions = {
             ioConfig: {
                 http: {
                     port: 22223
@@ -21,14 +21,16 @@ class TestServer {
                 path: "/live.io",
                 ioServerOptions: {}
             },
-            loggerName: "testWs:"
+            loggerName: "testWs:",
+            protocolHandlers: new Map()
         };
+        config.protocolHandlers.set("testaction", (websocket, data, ack) => {
+            ack(data);
+        });
 
-        this.proxy = new WebsocketProtocol(config);
-        this.proxy.on(WebsocketProtocol.events.CONNECTED, (socket) => {
-            socket.on("testaction", (data, ack) => {
-                ack(data);
-            });
+        this.proxy = new WebsocketServer(config);
+        this.proxy.on(WebsocketServer.events.CONNECTED, (socket) => {
+            const a = 1
         });
         const nsp = this.proxy.createNamespace("testNsp");
 

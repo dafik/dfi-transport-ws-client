@@ -61,7 +61,7 @@ abstract class Transport extends DfiEventObject {
     constructor(options: ITransportOptions) {
         options = {
             loggerName: "tr:",
-            nspName: "",
+            nspName: "/",
             useTimers: true,
             timeout: 500,
             ...options
