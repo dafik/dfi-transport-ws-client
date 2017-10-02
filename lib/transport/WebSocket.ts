@@ -163,7 +163,12 @@ export class WebSocketTransport extends DfiEventObject {
             this.removeProp(PROP_SOCKET);
         }
         if (this._manager) {
-            delete this._manager.nsps["/" + this.nspName];
+            delete this._manager.nsps[(this.nspName == "/" ? this.nspName : "/" + this.nspName)];
+            if (Object.keys(io.managers).length > 0 && Object.keys(this._manager.nsps).length === 0) {
+                const name = this._manager.uri.substr(0, this._manager.uri.length - 1);
+                delete io.managers[name];
+            }
+
             this._unbindManagerStsHandlers();
             this.removeProp(PROP_MANAGER);
         }
