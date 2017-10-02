@@ -143,9 +143,9 @@ export class WebSocketTransport extends DfiEventObject {
                     this._manager.off("open", openHandler);
                     this._manager.off("connect_error", openHandler);
                 }
-            })
+            });
         } else {
-            openHandler()
+            openHandler();
         }
     }
 
@@ -163,7 +163,7 @@ export class WebSocketTransport extends DfiEventObject {
             this.removeProp(PROP_SOCKET);
         }
         if (this._manager) {
-            delete this._manager.nsps[(this.nspName == "/" ? this.nspName : "/" + this.nspName)];
+            delete this._manager.nsps[(this.nspName === "/" ? this.nspName : "/" + this.nspName)];
             if (Object.keys(io.managers).length > 0 && Object.keys(this._manager.nsps).length === 0) {
                 const name = this._manager.uri.substr(0, this._manager.uri.length - 1);
                 delete io.managers[name];
@@ -212,7 +212,6 @@ export class WebSocketTransport extends DfiEventObject {
             this.logger.error("try to send: %o without socket", action);
         }
     }
-
 
     private _prepareSocketStdHandlers() {
         this._socketHandlers.set("connect", () => {
