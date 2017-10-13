@@ -119,7 +119,7 @@ describe("Client with server", () => {
     it("start and connect to running then halt server ", (done) => {
         testServer = new TestServer();
 
-        (testServer.proxy.toPlain() as { io } ).io.set('authorization', function (o, f) {
+        testServer.proxy.toPlain().prop.io.set('authorization', function (o, f) {
             f(null, false);
         });
 
