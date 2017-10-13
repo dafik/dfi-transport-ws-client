@@ -1,5 +1,5 @@
-import WebsocketServer from "local-cc-live-server/lib/transports/transport/websocketServer"
-import {IDfiLiveWebsocketServerOptions} from "local-cc-live-server/lib/interfaces";
+import WebsocketServer from "local-cc-live-server/src/transports/transport/websocketServer"
+import {IDfiLiveWebsocketServerOptions} from "local-cc-live-server/src/interfaces";
 import {DfiUtil} from "local-dfi-base/src/dfiUtil";
 
 class TestServer {
