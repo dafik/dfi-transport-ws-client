@@ -196,20 +196,21 @@ export class WebSocketTransport extends DfiEventObject {
         }
     }
 
-    public send(action: string, data?: any, ackFn?: (...args) => void, context?: any) {
+    public send(action: string, data?: any, ackFn?: (err?, ...args) => void, context?: any) {
         const socket = this._socket;
         if (socket) {
             if (typeof ackFn === "function") {
-                function localCallback() {
-                    ackFn.apply(context, arguments);
-                }
-
-                socket.emit(action, data, localCallback);
+                socket.emit(action, data, (...args) => {
+                    ackFn.apply(context, args);
+                });
             } else {
                 socket.emit(action, data);
             }
         } else {
             this.logger.error("try to send: %o without socket", action);
+            if (typeof ackFn === "function") {
+                ackFn.apply(context, new Error('try to send: "' + action + '" without socket'));
+            }
         }
     }
 
