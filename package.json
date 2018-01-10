@@ -1,23 +1,30 @@
 {
-  "name": "local-dfi-transport-ws-client",
+  "name": "dfi-transport-ws-client",
   "description": "abstract socket.io transport",
-  "author": "zbyszek.wieczorek@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dafik/dfi-base.git"
+  },
+  "author": {
+    "name": "Zbyszek Wieczorek",
+    "email": "zbyszek.wieczorek at gmal.com"
+  },
   "version": "0.0.32",
   "dependencies": {
-    "local-dfi-base": "*",
-    "local-dfi-debug-logger": "*",
-    "socket.io-client": "^2"
+    "dfi-base": "*",
+    "dfi-debug-logger": "*",
+    "socket.io-client": "^2.0.4"
   },
   "devDependencies": {
-    "@types/mocha": "^2.2.32",
-    "@types/node": "^6.0.46",
-    "@types/socket.io-client": "^1.4.27",
+    "@types/mocha": "^2.2.46",
+    "@types/node": "^6.0.96",
     "@types/socket.io": "^1.4.27",
-    "local-cc-live-server": "^1.0.12",
-    "mocha": "*",
-    "nyc": "^11.0.3",
+    "@types/socket.io-client": "^1.4.32",
+    "local-cc-live-server": "^1.0.27",
+    "mocha": "^4.1.0",
+    "nyc": "^11.4.1",
     "ts-node": "^3.3.0",
-    "typescript": "^2.4.2"
+    "typescript": "^2.6.2"
   },
   "engine": "node >= 6.1.0",
   "main": "lib/Transport.js",

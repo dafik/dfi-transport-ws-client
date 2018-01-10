@@ -25,7 +25,7 @@ class TestServer {
             protocolHandlers: new Map()
         };
         config.protocolHandlers.set("testaction", (websocket, data, ack) => {
-            ack(data);
+            ack(null, data);
         });
 
         this.proxy = new WebsocketServer(config);
@@ -36,7 +36,7 @@ class TestServer {
 
         nsp.on("connection", (socket) => {
             socket.on("testNspAction", (data, ack) => {
-                ack(data);
+                ack(null,data);
             });
         });
         this.proxy.listen();
